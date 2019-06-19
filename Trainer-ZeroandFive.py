@@ -19,15 +19,15 @@ callbacks = TensorBoard(log_dir='./Graph/{}'.format(GENERATE_NAME))
 
 dirTrain = 'TrainingZF/'
 dirValidation = 'ValidatingZF/'
-dirTrainZ = 'TrainingZF/Close/'
-dirTrainF = 'TrainingZF/Open/'
-dirValidationZ = 'ValidatingZF/Close/'
-dirValidationF = 'ValidatingZF/Open/'
+dirTrainZ = '/home/linkgish/Desktop/MachLearn5/TrainingZF/Close'
+dirTrainF = '/home/linkgish/Desktop/MachLearn5/TrainingZF/Open/'
+dirValidationZ = '/home/linkgish/Desktop/MachLearn5/ValidatingZF/Close/'
+dirValidationF = '/home/linkgish/Desktop/MachLearn5/ValidatingZF/Open/'
 training = 900*2
 validating = 100*2
 batch_size = 32
 img_size = 224
-epoch = 30
+epoch = 5
 
 def preprocessing(img_source):
     #img_source = str(img_source)
@@ -101,15 +101,16 @@ load_Z_img_val = os.listdir(dirValidationZ)
 load_F_img_val = os.listdir(dirValidationF)
 '''
 for img in load_Z_img_train:
-        #print(str(load_Z_img_train)+str(img))
-        print(str(dirTrainZ)+str(img))
-
+    #print(str(load_Z_img_train)+str(img))
+    print(str(dirTrainZ)+str(img))
+'''
+'''
 for img in tqdm(load_Z_img_train):
-        #print(str(load_Z_img_train+img))
-        img_array = preprocessing(str(dirTrainZ)+str(load_Z_img_train)+str(img))
-        cv2.imshow('This is image',img_array)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+    #print(str(load_Z_img_train+img))
+    img_array = preprocessing(str(dirTrainZ)+str(load_Z_img_train)+str(img))
+    cv2.imshow('This is image',img_array)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 '''
 
 def create_train_data():
@@ -143,12 +144,12 @@ def create_val_data():
     np.save('val_data.npy', validation_data)
     return validation_data
 
-train = create_train_data()
-val = create_val_data()
+#train = create_train_data()
+#val = create_val_data()
 
 #If you already have database
-#train = np.load('training_data.npy')
-#val = np.load('val_data.npy')
+train = np.load('/home/linkgish/Desktop/MachLearn5/training_data.npy')
+val = np.load('/home/linkgish/Desktop/MachLearn5/val_data.npy')
 
 X = np.array([i[0] for i in train]).reshape(-1,img_size,img_size,1)
 Y = [i[1] for i in train]
@@ -175,5 +176,5 @@ model.fit({'input': X}, {'targets': Y}, n_epoch=epoch,
 #    callbacks=[callbacks])
 
 #model.save_weights('SignZeroFive.h5')
-model.save('SignZeroFive.model')
+model.save('SignZeroFive2.model')
 #model.make_model("SignZeroFive.json")

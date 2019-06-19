@@ -33,7 +33,7 @@ convnet = fully_connected(convnet, 2, activation='softmax')
 convnet = regression(convnet, optimizer='adam', learning_rate=0.0001, loss='categorical_crossentropy', name='targets')
 
 model = tflearn.DNN(convnet, tensorboard_dir='log')
-model.load('SignZeroFive.model')
+model.load('/home/linkgish/Desktop/MachLearn5/SignZeroFive.model')
 
 def preprocessing(img_source):
     #img_source = str(img_source)
