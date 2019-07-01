@@ -1,3 +1,4 @@
+#pass
 import tensorflow as tf 
 import os 
 import cv2
@@ -11,8 +12,8 @@ from tflearn.layers.estimator import regression
 import pyautogui
 
 cam = cv2.VideoCapture(0)
-cam.set(3,300)
-cam.set(4,300)
+cam.set(3,200)
+cam.set(4,200)
 #cam.set(cv2.CAP_PROP_FPS, 3)
 img_size = 224
 boolean = 1
@@ -24,9 +25,9 @@ convnet = conv_2d(convnet, 32, 5, activation='relu')
 convnet = max_pool_2d(convnet, 5)
 
 convnet = conv_2d(convnet, 64, 5, activation='relu')
-convnet = max_pool_2d(convnet, 5)
+MaxPool2D_1 = max_pool_2d(convnet, 5)
 
-convnet = fully_connected(convnet, 1024, activation='relu')
+convnet = fully_connected(MaxPool2D_1, 1024, activation='relu')
 convnet = dropout(convnet, 0.8)
 
 convnet = fully_connected(convnet, 2, activation='softmax')
@@ -89,22 +90,23 @@ while boolean:
     max_color = np.array([35, 255, 255], dtype = "uint8")
     HSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(HSV, min_color, max_color)
-    '''kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5,5))
-    mask = cv2.dilate(mask, kernel)'''
-    
-    ret, thresh = cv2.threshold(mask,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-
-    # Remove hair with opening
-    #kernel = np.ones((2,2),np.uint8)
-    #mask = cv2.morphologyEx(thresh,cv2.MORPH_OPEN,kernel, iterations = 1)
-
     mask224 = preprocessing(mask)
     newmask = np.reshape(mask224, (-1,224,224,1))
     #newmask = np.expand_dims(mask224, axis=-1)
     #binary = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
-    # model.sumarry()
+
     prediction = model.predict(newmask)
-    #print(prediction)
+    print(prediction)
+    '''
+    argmax = np.argmax(prediction[0])
+    output = model.output[:, argmax]
+    print(output)
+'''
+    observed = [MaxPool2D_1]
+    observers = [tflearn.DNN(v, session=model.session) for v in observed]
+    outputs = [model.predict(newmask) for m in observers]
+    print([d.shape for d in outputs])
+
 
     cv2.namedWindow("img 0")
     cv2.imshow('img 0', frame)
